@@ -1,2 +1,2 @@
-def count():
-    
+def count_letters():
+    None
