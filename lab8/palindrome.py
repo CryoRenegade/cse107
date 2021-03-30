@@ -2,14 +2,10 @@ def isPalRec(st, s, e) :
     # If there is only one character
     if (s == e):
         return True
-    # If first and last
-    # characters do not match
+    # If first and last characters do not match
     if (st[s] != st[e]) :
         return False
-    # If there are more than
-    # two characters, check if
-    # middle substring is also
-    # palindrome or not.
+    # If there are more than two characters, check if middle substring is also palindrome or not.
     if (s < e + 1) :
         return isPalRec(st, s + 1, e - 1)
     return True
