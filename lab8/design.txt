@@ -1,0 +1,6 @@
+Have 2 functions
+One to serperate the chars and another to compare
+If the length is zero... its a palindrome
+Otherwise, make the variable tracking the length subtract one and on to the next function.
+S always equal 0 when entering the function so if n = 0,l its a pal
+Compare s to e and subtract one from e and add one to s to see if the stuff is actually the same on both sides.
