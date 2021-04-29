@@ -24,7 +24,7 @@ def forward(length):
     t1.forward(length)
 
 
-"""Implements main code excecution"""
+#Implements main code execution
 
 
 def main():

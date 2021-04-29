@@ -4,6 +4,9 @@
 
 def collatz_len(c):
     count = 1
+    if c == -1:
+        print("There is no way in hell that is happening, denied.")
+        exit()
     while c != 1:
         if c % 2 == 0:
             c = c / 2
@@ -18,6 +21,9 @@ def collatz_len(c):
 
 def main():
     c = int(input("Enter a starting number:"))
+    if c == -1:
+        print("There is no way in hell that is happening, denied.")
+        exit()
     count = collatz_len(c)
     print("Length of Collatz sequence:", count)
 

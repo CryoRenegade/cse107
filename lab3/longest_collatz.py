@@ -8,7 +8,7 @@ def main():
     countfin = 0
     ifin = 0
     """Runs all numbers between 1 and 1 million to find best collatz score"""
-    for i in range(1, 1000000):
+    for i in range(-1000000, 1000000):
         count = collatz_len(i)
         if countfin < count:
             """Fin means final"""
