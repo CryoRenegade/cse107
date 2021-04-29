@@ -1,58 +1,263 @@
+# importing the module
+import sys
 import csv
-def info(rows):
-    None
-def lists(choice):
-    with open(choice, 'r') as page:
-        print(page.read())
-def load(row):
-    choice = input("What file would you like to load? If you want the default file, just enter contacts.csv. ")
-    with open(choice, 'r') as page:
-        reader = csv.reader(page, delimiter = '\t')
-        for row in reader:
-            row.append(reader)
-            print(row)
-        return(row)
-def add(row):
-    stuff = [input("What is the name of the contact?"), input("What is their phone number?"), input("What companmy do they work for?"), input("What is their email?"), input("Any Notes?")]
-    row.append(stuff)
-    return(row)
-def note():
-    None
-def remove():
-    None
-def save(row):
+#Exports db to a csv file.
+def savefile(row):
     choice = input("What file would you like to load? If you want the default file included with the package, just enter contacts.csv. ")
-    with open(choice, 'w') as file:
+    with open(input("What file would you like to write?"), 'a') as file:
         writer = csv.writer(file)
         writer.writerows(row)
-def commandme():
-    None
+# this function will be the first to run as soon as the main function executes
+def initial_phonebook():
+    rows, cols = int(input("Please enter initial number of contacts: ")), 5
+    # I are collecting the initial number of contacts the user wants to have in the
+    # phonebook already. User may also enter 0 if he doesn't wish to enter any.
+    database = []
+    print(database)
+    for i in range(rows):
+        print("\nEnter contact %d details in the following order (ONLY):" % (i+1))
+        print("NOTE: * indicates mandatory fields")
+        print("....................................................................")
+        temp = []
+        for j in range(cols):
+        # I have taken the conditions for values of j only for the personalized fields
+        # such as name, number, e-mail id, dob, category etc
+            if j == 0:
+                temp.append(str(input("Enter name*: ")))
+                # I need to check if the user has left the name empty as its mentioned that
+                # name & number are mandatory fields.
+                # So implement a condition to check as below.
+                if temp[j] == '' or temp[j] == ' ':
+                    sys.exit(
+                        "Name is a mandatory field. Process exiting due to blank field...")
+                    # This will exit the process if a blank field is encountered.
+            if j == 1:
+                temp.append(int(input("Enter number*: ")))
+                # I do not need to check if user has entered the number because it automatically
+                # takes care of it. Int value cannot accept a blank as that counts as a string.
+                # So process automatically exits without us using the sys package.
+            if j == 2:
+                temp.append(str(input("Enter e-mail address: ")))
+                # Even if this field is left as blank, None will take the blank's place
+                if temp[j] == '' or temp[j] == ' ':
+                    temp[j] = None
+
+            if j == 3:
+                temp.append(str(input("Enter date of birth(dd/mm/yy): ")))
+                # Whatever format the user enters dob in, it won't make a difference to the compiler
+                # Only while searching the user will have to enter query exactly the same way as
+                # he entered during the input so as to ensure accurate searches
+                if temp[j] == '' or temp[j] == ' ':
+                # Even if this field is left as blank, None will take the blank's place
+                    temp[j] = None
+            if j == 4:
+                temp.append(
+                    str(input("Enter category(Family/Friends/Work/Others): ")))
+                # Even if this field is left as blank, None will take the blank's place
+                if temp[j] == "" or temp[j] == ' ':
+                    temp[j] = None
+
+        database.append(temp)
+        # By this step I are appending a list temp into a list database
+        # That means database is a 2-D array and temp is a 1-D array
+
+    print(database)
+    return database
+
+def menu():
+    # I created this simple menu function for
+    # code reusability & also for an interactive console
+    # Menu func will only execute when called
+    print("********************************************************************")
+    print("\t\t\tDIRECTORY OF HELL", flush=False)
+    print("********************************************************************")
+    print("\tYou can perform the following operations\n")
+    print("1. Add a new contact")
+    print("2. Remove an existing contact")
+    print("3. Delete all contacts")
+    print("4. Search for a contact")
+    print("5. Display all contacts")
+    print("6. Save contact directory to csv file")
+    print("7. Exit the matrix")
+    # Out of the provided 6 choices, user needs to enter any 1 choice among the 6
+    # I return the entered choice to the calling function wiz main in our case
+    choice = int(input("Please enter your choice: "))
+
+    return choice
+
+def add_contact(db):
+    # Adding a contact is the easiest because all you need to do is:
+    # append another list of details into the already existing list
+    dip = []
+    for i in range(len(db[0])):
+        if i == 0:
+            dip.append(str(input("Enter name: ")))
+        if i == 1:
+            dip.append(int(input("Enter number: ")))
+        if i == 2:
+            dip.append(str(input("Enter e-mail address: ")))
+        if i == 3:
+            dip.append(str(input("Enter date of birth(dd/mm/yy): ")))
+        if i == 4:
+            dip.append(
+                str(input("Enter category(Family/Friends/Work/Others): ")))
+    db.append(dip)
+    # And once you modify the list, you return it to the calling function wiz main, here.
+    return db
+
+def remove_existing(db):
+    # This function is to remove a contact's details from existing phonebook
+    query = str(
+        input("Please enter the name of the contact you wish to remove: "))
+    # I'll collect name of the contact and search if it exists in our phonebook
+    temp = 0
+    # temp is a checking variable here. I assigned a value 0 to temp.
+    for i in range(len(db)):
+        if query == db[i][0]:
+            temp += 1
+            # Temp will be incremented & it won't be 0 anymore in this function's scope
+            print(db.pop(i))
+            # The pop function removes entry at index i
+
+            print("This query has now been removed")
+            # printing a confirmation message after removal.
+            # This ensures that removal was successful.
+            # After removal I will return the modified phonebook to the calling function
+            # which is main in our program
+
+            return db
+    if temp == 0:
+        # Now if at all any case matches temp should have incremented but if otherwise,
+        # temp will remain 0 and that means the query does not exist in this phonebook
+        print("Sorry, you have entered an invalid query.\
+    Please recheck and try again later.")
+
+        return db
+
+def delete_all(db):
+    # This function will simply delete all the entries in the phonebook db
+    # It will return an empty phonebook after clearing
+    return db.clear()
+
+def search_existing(db):
+    # This function searches for an existing contact and displays the result
+    choice = int(input("Enter search criteria\n\n\
+    1. Name\n2. Number\n3. Email-id\n4. DOB\n5. Category(Family/Friends/Work/Others)\
+    \nPlease enter: "))
+    # I'llre doing so just to ensure that the user experiences a customized search result
+
+    temp = []
+    check = -1
+
+    if choice == 1:
+    # This will execute for searches based on contact name
+        query = str(
+            input("Please enter the name of the contact you wish to search: "))
+        for i in range(len(db)):
+            if query == db[i][0]:
+                check = i
+                temp.append(db[i])
+
+    elif choice == 2:
+    # This will execute for searches based on contact number
+        query = int(
+            input("Please enter the number of the contact you wish to search: "))
+        for i in range(len(db)):
+            if query == db[i][1]:
+                check = i
+                temp.append(db[i])
+
+    elif choice == 3:
+    # This will execute for searches based on contact's e-mail address
+        query = str(input("Please enter the e-mail ID\
+        of the contact you wish to search: "))
+        for i in range(len(db)):
+            if query == db[i][2]:
+                check = i
+                temp.append(db[i])
+
+    elif choice == 4:
+    # This will execute for searches based on contact''s date of birth
+        query = str(input("Please enter the DOB (in dd/mm/yyyy format ONLY)\
+            of the contact you wish to search: "))
+        for i in range(len(db)):
+            if query == db[i][3]:
+                check = i
+                temp.append(db[i])
+
+    elif choice == 5:
+    # This will execute for searches based on contact category
+        query = str(
+            input("Please enter the category of the contact you wish to search: "))
+        for i in range(len(db)):
+            if query == db[i][4]:
+                check = i
+                temp.append(db[i])
+        # All contacts under query category will be shown using this feature
+
+    else:
+    # If the user enters any other choice then the search will be unsuccessful
+        print("Invalid search criteria")
+        return -1
+    # returning -1 indicates that the search was unsuccessful
+
+    # all the searches are stored in temp and all the results will be displayed with
+    # the help of display function
+
+    if check == -1:
+        return -1
+        # returning -1 indicates that the query did not exist in the directory
+    else:
+        display_all(temp)
+        return check
+        # Im just returning a index value wiz not -1 to calling function just to notify
+        # that the search worked successfully
+
+# this function displays all content of phonebook db
+def display_all(db):
+    if not db:
+    # if display function is called after deleting all contacts then the len will be 0
+    # And then without this condition it will throw an error
+        print("List is empty: []")
+    else:
+        for i in range(len(db)):
+            print(db[i])
+
+def thanks():
+# A simple gesture of courtesy towards the user to enhance user experience
+    print("********************************************************************")
+    print("Hasta la vista or whatever, i don't care (baka...).")
+    print("Please visit again!")
+    print("********************************************************************")
+
 def main():
-    row = []
-    print("Welcome to Cryo's Contact Contract Purgatory! To know more about this app, use the about command!")
-    while True:
-        command = input("What command would you like to run?: ")
-        if command == "about" or command == "About":
-            with open('README.md', "r") as openfile:
-                print(openfile.read())
-        elif command == "exit" or command == "Exit":
-            print("Hasta la vista or whatever, i don't care (baka...). Come back soon!")
-            exit()
-        elif command == "info" or command == "Info":
-            info(page)
-        elif command == "list" or command == "List":
-            lists(page)
-        elif command == "load" or command == "Load":
-            page = load(row)
-        elif command == "add" or command == "Add":
-            add(page)
-        elif command == "note" or command == "Note":
-            note(page)
-        elif command == "remove" or command == "Remove":
-            remove(page)
-        elif command == "save" or command == "Save":
-            save(page)
-        elif command == "commands" or command == "Commands":
-            commandme(page)
+    # Main function code
+    print("....................................................................")
+    print("Hello dear user, welcome to our smartphone directory system")
+    print("You may now proceed to explore this directory")
+    print("....................................................................")
+    # This is solely meant for decoration purpose only.
+    # You're free to modify your interface as per your will to make it look interactive
+
+    ch = 1
+    db = initial_phonebook()
+    while ch in (1, 2, 3, 4, 5, 6):
+        ch = menu()
+        if ch == 1:
+            db = add_contact(db)
+        elif ch == 2:
+            db = remove_existing(db)
+        elif ch == 3:
+            db = delete_all(db)
+        elif ch == 4:
+            d = search_existing(db)
+            if d == -1:
+                print("The contact does not exist. Please try again")
+        elif ch == 5:
+            display_all(db)
+        elif ch == 6:
+            savefile(db)
+        else:
+            thanks()
 if __name__ == "__main__":
     main()
